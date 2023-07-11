@@ -1,8 +1,11 @@
 mod geom_helpers;
 
 use crate::geom_helpers::{calc_eucledian_distance, Point, Viewport};
+use image::{imageops::FilterType, DynamicImage};
+
 
 fn main() {
+    let final_size = (100, 100);
     let imgx: u32 = 800;
     let imgy: u32 = 800;
 
@@ -28,7 +31,8 @@ fn main() {
         }
     }
 
-    imgbuf = image::imageops::blur(&imgbuf, 1.0);
+    let scaled = DynamicImage::from(imgbuf).resize(100, 100, FilterType::Lanczos3);
+    // imgbuf = image::imageops::blur(&imgbuf, 1.0);
 
-    imgbuf.save("./outputs/logo.png").unwrap();
+    scaled.save("./outputs/logo.png").unwrap();
 }
