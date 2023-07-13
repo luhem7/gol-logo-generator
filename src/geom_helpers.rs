@@ -14,10 +14,6 @@ impl Point {
             y: y as f32 
         }
     }
-
-    pub fn x(&self) -> f32{ self.x }
-
-    pub fn y(&self) -> f32{ self.y }
 }
 
 pub fn calc_eucledian_distance(p1: &Point, p2: &Point) -> f32{
