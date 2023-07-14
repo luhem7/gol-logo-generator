@@ -60,13 +60,6 @@ pub struct Viewport {
 }
 
 impl Viewport {
-    pub fn new(width: u32, height: u32) -> Self {
-        Self { 
-            width: width as f32,
-            height: height as f32 
-        }
-    }
-
     pub fn translate(&self, p: Point) -> Point {
         let new_x = ( self.width / 2.0 + p.x).round().max(0.0).min( self.width);
         let new_y = (self.height / 2.0 - p.y).round().max(0.0).min(self.height);
@@ -86,7 +79,8 @@ impl From<&ImgSize> for Viewport {
 
 #[test]
 fn test_viewport_translation() {
-    let viewport = Viewport::new(100, 200);
+    let img_size = ImgSize(100, 200);
+    let viewport = Viewport::from(&img_size);
 
     let p2 = viewport.translate(Point::new(0.0, 0.0));
     assert_eq!(p2.x, 50.0);

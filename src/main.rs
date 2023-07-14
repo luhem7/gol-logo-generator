@@ -52,7 +52,8 @@ fn main() {
     let viewport = Viewport::from(&source_size);
     let circle_radius = source_size.0 as f32 / 10.0;
 
-    let mut imgbuf = image::ImageBuffer::new(source_size.0, source_size.1);
+    let default_pixel = image::Rgb([0, 0, 0]);
+    let mut imgbuf = image::ImageBuffer::from_pixel(source_size.0, source_size.1, default_pixel);
     draw_circle(viewport.translate(Point::new(0.0, 0.0)), source_size.0 as f32/2.0, WHITE, &mut imgbuf);
 
     let dist_ratio = 4.5;
