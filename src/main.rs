@@ -7,9 +7,10 @@ use crate::geom_helpers::{calc_eucledian_distance, Point, Viewport, ImgSize};
 
 
 const WHITE: [u8; 3] = [255, 255, 255];
+const GRAY: [u8; 3] = [164, 164, 164];
 
 
-fn draw_circle(circle_center: Point, circle_radius: f32, pixel_color: [u8; 3], imgbuf: &mut ImageBuffer<Rgb<u8>, Vec<u8>>) {
+fn draw_circle(circle_center: &Point, circle_radius: f32, pixel_color: [u8; 3], imgbuf: &mut ImageBuffer<Rgb<u8>, Vec<u8>>) {
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
         // Poorly optimized code. I should be operating on arrays of u32's instead of using formal Point structs.
         let curr_point = Point::new_u32(x, y);
@@ -23,7 +24,7 @@ fn draw_circle(circle_center: Point, circle_radius: f32, pixel_color: [u8; 3], i
 
 
 fn draw_circle_rainbow(
-    circle_center: Point, 
+    circle_center: &Point, 
     circle_radius: f32, 
     rainbow_center: Point, 
     starting_color: Hsl, 
@@ -52,9 +53,9 @@ fn main() {
     let viewport = Viewport::from(&source_size);
     let circle_radius = source_size.0 as f32 / 10.0;
 
-    let default_pixel = image::Rgb([0, 0, 0]);
+    let default_pixel = image::Rgb(WHITE);
     let mut imgbuf = image::ImageBuffer::from_pixel(source_size.0, source_size.1, default_pixel);
-    draw_circle(viewport.translate(Point::new(0.0, 0.0)), source_size.0 as f32/2.0, WHITE, &mut imgbuf);
+    draw_circle(&viewport.translate(Point::new(0.0, 0.0)), source_size.0 as f32/2.0, WHITE, &mut imgbuf);
 
     let dist_ratio = 4.5;
 
@@ -72,8 +73,11 @@ fn main() {
     for circle_center in circle_centers {
         let circle_center_p = viewport.translate(Point::new(circle_center.0, circle_center.1));
         let dot_center_translated = viewport.translate(adjusted_dot_center.into());
+
+        draw_circle(&circle_center_p, circle_radius+6.0, GRAY, &mut imgbuf);
+
         draw_circle_rainbow(
-            circle_center_p, 
+            &circle_center_p, 
             circle_radius, 
             dot_center_translated, 
             pixel_color, 
