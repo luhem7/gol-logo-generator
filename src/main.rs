@@ -3,10 +3,9 @@ use image::{imageops::FilterType, DynamicImage, ImageBuffer, Rgb};
 use palette::{FromColor, Hsl, Srgb, ShiftHue};
 
 mod geom_helpers;
-use crate::geom_helpers::{calc_eucledian_distance, Point, Viewport};
+use crate::geom_helpers::{calc_eucledian_distance, Point, Viewport, ImgSize};
 
 
-struct ImgSize (u32, u32);
 const WHITE: [u8; 3] = [255, 255, 255];
 
 
@@ -50,7 +49,7 @@ fn main() {
     ];
     let source_size = ImgSize(1024, 1024);
 
-    let viewport = Viewport::new(source_size.0, source_size.1);
+    let viewport = Viewport::from(&source_size);
     let circle_radius = source_size.0 as f32 / 10.0;
 
     let mut imgbuf = image::ImageBuffer::new(source_size.0, source_size.1);

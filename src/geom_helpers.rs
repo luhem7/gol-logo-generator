@@ -75,6 +75,14 @@ impl Viewport {
     }
 }
 
+pub struct ImgSize (pub u32, pub u32);
+
+impl From<&ImgSize> for Viewport {
+    fn from(value: &ImgSize) -> Self {
+        Viewport { width: value.0 as f32, height: value.1 as f32 }
+    }
+}
+
 
 #[test]
 fn test_viewport_translation() {
