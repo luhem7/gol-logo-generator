@@ -23,13 +23,18 @@ fn draw_circle(circle_center: Point, circle_radius: f32, pixel_color: [u8; 3], i
 }
 
 
-fn draw_circle_rainbow(circle_center: Point, circle_radius: f32, img_height: f32, starting_color: Hsl, imgbuf: &mut ImageBuffer<Rgb<u8>, Vec<u8>>) {
+fn draw_circle_rainbow(
+    circle_center: Point, 
+    circle_radius: f32, 
+    rainbow_center: Point, 
+    starting_color: Hsl, 
+    imgbuf: &mut ImageBuffer<Rgb<u8>, Vec<u8>>) {
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
         // Poorly optimized code. I should be operating on arrays of u32's instead of using formal Point structs.
         let curr_point = Point::new_u32(x, y);
 
         let distance_to_center = calc_eucledian_distance(&circle_center, &curr_point);
-        let distance_from_corner = calc_eucledian_distance(&curr_point, &Point::new(0.0, img_height)) / 1.5;
+        let distance_from_corner = calc_eucledian_distance(&curr_point, &rainbow_center) / 1.5;
         if distance_to_center <= circle_radius {
             *pixel = image::Rgb(Srgb::from_color(starting_color.shift_hue(distance_from_corner)).into_format().into());
         }
@@ -50,24 +55,29 @@ fn main() {
 
     let mut imgbuf = image::ImageBuffer::new(source_size.0, source_size.1);
     draw_circle(viewport.translate(Point::new(0.0, 0.0)), source_size.0 as f32/2.0, WHITE, &mut imgbuf);
-    // for (_, _, pixel) in imgbuf.enumerate_pixels_mut() {
-    //     *pixel = image::Rgb(WHITE);
-    // }
 
     let dist_ratio = 4.5;
+
+    let adjusted_dot_center = ((-1.0*source_size.0 as f32 / dist_ratio) + (source_size.0 as f32 / (dist_ratio*4.0)), 0.0);
     let circle_centers = [
         (0.0, source_size.1 as f32 / dist_ratio),
         (source_size.0 as f32 / dist_ratio, source_size.1 as f32 / dist_ratio),
-        ((-1.0*source_size.0 as f32 / dist_ratio) + (source_size.0 as f32 / (dist_ratio*4.0)), 0.0),
+        adjusted_dot_center,
         (source_size.0 as f32 / dist_ratio, 0.0),
         (source_size.0 as f32 / dist_ratio, -1.0*source_size.1 as f32 / dist_ratio),
     ];
     
-    let pixel_color: Hsl = Hsl::new(0.0, 0.75, 0.5);
+    let pixel_color: Hsl = Hsl::new(230.0, 0.90, 0.5);
 
     for circle_center in circle_centers {
         let circle_center_p = viewport.translate(Point::new(circle_center.0, circle_center.1));
-        draw_circle_rainbow(circle_center_p, circle_radius, source_size.1 as f32, pixel_color, &mut imgbuf);
+        let dot_center_translated = viewport.translate(adjusted_dot_center.into());
+        draw_circle_rainbow(
+            circle_center_p, 
+            circle_radius, 
+            dot_center_translated, 
+            pixel_color, 
+            &mut imgbuf);
     }
     
     let directory_path = "outputs";

@@ -16,6 +16,12 @@ impl Point {
     }
 }
 
+impl From<(f32, f32)> for Point {
+    fn from(value: (f32, f32)) -> Self {
+        Point::new(value.0, value.1)
+    }
+}
+
 pub fn calc_eucledian_distance(p1: &Point, p2: &Point) -> f32{
     ((p1.x - p2.x).powf(2.0) + (p1.y - p2.y).powf(2.0)).sqrt()
 }
